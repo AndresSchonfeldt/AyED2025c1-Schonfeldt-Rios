@@ -1,4 +1,4 @@
-**# 🎮 Juego de Guerra
+ 🎮 Juego de Guerra
 
 Breve descripción del proyecto:
 Este es un script que simula el clásico juego de cartas "Guerra" entre dos jugadores, implementando una interfaz gráfica interactiva con la librería turtle de Python. Permite:
