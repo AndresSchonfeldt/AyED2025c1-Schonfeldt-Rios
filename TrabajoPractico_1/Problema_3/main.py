@@ -1,348 +1,295 @@
-import turtle
-import random
-import time
+import turtle # Importa el módulo turtle para gráficos
+import random # Importa el módulo random para generar números aleatorios
+import time # Importa el módulo time para controlar el tiempo
 
-# Configuración de la pantalla
-screen = turtle.Screen()
-screen.setup(width=800, height=600)
-screen.bgcolor("white")
-screen.title("Juego de Guerra - Mejor de 3")
-screen.tracer(0)  # Desactiva la actualización automática de la pantalla
+class DequeEmptyError(Exception): # Define una excepción personalizada para indicar que un deque está vacío
+    pass
 
-# Registro de formas para las cartas (puedes personalizar esto)
-screen.register_shape("carta_boca_abajo", ((-20, -30), (-20, 30), (20, 30), (20, -30)))
+class Mazo: # Define la clase Mazo para representar una baraja de cartas
+    def __init__(self): # Constructor de la clase Mazo
+        self.cartas = [] # Inicializa la lista de cartas
 
-# Clase para representar una carta
-class Carta:
-    def __init__(self, valor='', palo=''):
-        self.valor = valor
-        self.palo = palo
-        self.visible: bool = False
+    def poner_carta_arriba(self, carta): # Define el método para añadir una carta al final del mazo
+        self.cartas.append(carta) # Añade la carta a la lista
 
-    @property
-    def visible(self):
-        return self._visible
+    def sacar_carta_arriba(self, mostrar=False): # Define el método para sacar una carta del final del mazo
+        if not self.cartas: # Comprueba si el mazo está vacío
+            raise DequeEmptyError("El mazo está vacío") # Lanza una excepción si el mazo está vacío
+        carta = self.cartas.pop() # Saca la última carta del mazo
+        if mostrar: # Comprueba si la carta debe mostrarse
+            carta.visible = True # Hace la carta visible
+        return carta # Devuelve la carta
 
-    @visible.setter
-    def visible(self, visible):
-        self._visible = visible
+    def poner_carta_abajo(self, carta): # Define el método para poner una carta al principio del mazo
+        self.cartas.insert(0, carta) # Inserta la carta al principio de la lista
 
-    @property
-    def valor(self):
-        return self._valor
+    def __len__(self): # Define el método para obtener el número de cartas en el mazo
+        return len(self.cartas) # Devuelve el número de cartas en la lista
 
-    @valor.setter
-    def valor(self, valor):
-        self._valor = valor
+    def __str__(self): # Define el método para convertir el mazo en una cadena
+        return ' '.join(str(carta) for carta in self.cartas) # Devuelve una cadena con las cartas separadas por espacios
 
-    @property
-    def palo(self):
-        return self._palo
+class Carta: # Define la clase Carta para representar una carta
+    def __init__(self, valor='', palo=''): # Constructor de la clase Carta
+        self.valor = valor # Inicializa el valor de la carta
+        self.palo = palo # Inicializa el palo de la carta
+        self.visible:bool = False # Inicializa la visibilidad de la carta
 
-    @palo.setter
-    def palo(self, palo):
-        self._palo = palo
+    @property # Define la propiedad visible
+    def visible(self): # Define el getter de la propiedad visible
+        return self._visible # Devuelve el valor de la propiedad visible
 
-    def _valor_numerico(self):
-        valores = ['J', 'Q', 'K', 'A']
-        if self.valor in valores:
-            idx = valores.index(self.valor)
-            return (11 + idx)
-        return int(self.valor)
+    @visible.setter # Define el setter de la propiedad visible
+    def visible(self, visible): # Define el método para establecer el valor de la propiedad visible
+        self._visible = visible # Establece el valor de la propiedad visible
 
-    def __gt__(self, otra):
-        """2 cartas deben compararse por su valor numérico"""
-        return self._valor_numerico() > otra._valor_numerico()
+    @property # Define la propiedad valor
+    def valor(self): # Define el getter de la propiedad valor
+        return self._valor # Devuelve el valor de la propiedad valor
 
-    def __str__(self):
-        if not self.visible:
-            return "-X"
-        else:
-            return self.valor + self.palo
+    @valor.setter # Define el setter de la propiedad valor
+    def valor(self, valor): # Define el método para establecer el valor de la propiedad valor
+        self._valor = valor # Establece el valor de la propiedad valor
 
-    def __repr__(self):
-        return str(self)
+    @property # Define la propiedad palo
+    def palo(self): # Define el getter de la propiedad palo
+        return self._palo # Devuelve el valor de la propiedad palo
 
-# Clase para representar un mazo (usando una lista simple en lugar de Deque)
-class Mazo:
-    def __init__(self):
-        self.cartas = []
+    @palo.setter # Define el setter de la propiedad palo
+    def palo(self, palo): # Define el método para establecer el valor de la propiedad palo
+        self._palo = palo # Establece el valor de la propiedad palo
 
-    def poner_carta_arriba(self, carta):
-        self.cartas.append(carta)
+    def _valor_numerico(self): # Define el método para obtener el valor numérico de la carta
+        valores = ['J','Q','K','A'] # Define la lista de valores especiales
+        if self.valor in valores: # Comprueba si el valor de la carta está en la lista de valores especiales
+            idx = valores.index(self.valor) # Obtiene el índice del valor en la lista
+            return (11 + idx) # Devuelve el valor numérico de la carta
+        return int(self.valor) # Devuelve el valor numérico de la carta
 
-    def sacar_carta_arriba(self, mostrar=False):
-        if not self.cartas:
-            raise IndexError("Mazo vacío")
-        carta = self.cartas.pop()
-        carta.visible = mostrar
-        return carta
+    def __gt__(self, otra): # Define el método para comparar dos cartas
+        """2 cartas deben compararse por su valor numérico""" # Documentación del método
+        return self._valor_numerico() > otra._valor_numerico() # Compara los valores numéricos de las cartas
 
-    def poner_carta_abajo(self, carta):
-        self.cartas.insert(0, carta)
+    def __str__(self): # Define el método para convertir la carta en una cadena
+        if self.visible == False: # Comprueba si la carta es visible
+            return "-X" # Devuelve "-X" si la carta no es visible
+        else: # Si la carta es visible
+            return self.valor + self.palo # Devuelve el valor y el palo de la carta
 
-    def __len__(self):
-        return len(self.cartas)
+    def __repr__(self): # Define el método para representar la carta
+        return str(self) # Devuelve la cadena de la carta
 
-    def __str__(self):
-        return ' '.join(str(carta) for carta in self.cartas)
 
-# Clase principal del juego
-class JuegoGuerra:
-    valores = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-    palos = ['♠', '♥', '♦', '♣']
-    N_TURNOS = 10000
-    DELAY = 0.4  # Aumentar el delay para un juego más lento
-    MAX_TIME_PER_GAME = 8  # Aumentar el tiempo máximo por partida
+class JuegoGuerra: # Define la clase JuegoGuerra para representar el juego
+    valores = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'] # Define los valores de las cartas
+    palos = ['♠', '♥', '♦', '♣'] # Define los palos de las cartas
+    VICTORIA = 10 # Define el número de victorias necesarias para ganar
 
-    def __init__(self, random_seed=None):
-        if random_seed is None:
-            self._seed = random.randint(0, 1000)  # Semilla aleatoria si no se proporciona
-        else:
-            self._seed = random_seed
-        random.seed(self._seed)
+    def __init__(self, random_seed = 0): # Constructor de la clase JuegoGuerra
+        self._mazo_inicial = Mazo() # Inicializa el mazo inicial
+        self.mazo_1 = Mazo() # Inicializa el mazo del jugador 1
+        self.mazo_2 = Mazo() # Inicializa el mazo del jugador 2
+        self._guerra = False # Inicializa la variable de guerra
+        self._ganador = '' # Inicializa la variable del ganador
+        self.empate = False # Inicializa la variable de empate
+        self._turno = 0 # Inicializa el número de turno
+        self._cartas_en_la_mesa = [] # Inicializa la lista de cartas en la mesa
+        self._seed = random_seed # Inicializa la semilla aleatoria
+        self.jugador1_ganadas = 0 # Inicializa el número de victorias del jugador 1
+        self.jugador2_ganadas = 0 # Inicializa el número de victorias del jugador 2
+        self._setup_turtle() # Inicializa la interfaz turtle
 
-        self._mazo_inicial = Mazo()
-        self.mazo_1 = Mazo()
-        self.mazo_2 = Mazo()
-        self._guerra = False
-        self._ganador = ''
-        self.empate = False
-        self._turno = 0
-        self._cartas_en_la_mesa = []
-        self.jugador1_turtle = turtle.Turtle()
-        self.jugador2_turtle = turtle.Turtle()
-        self.mesa_turtle = turtle.Turtle()
-        self.carta1_turtle = turtle.Turtle()  # Tortuga para mostrar la carta del jugador 1
-        self.carta2_turtle = turtle.Turtle()  # Tortuga para mostrar la carta del jugador 2
-        self.marcador_turtle = turtle.Turtle()  # Tortuga para mostrar el marcador
-        self.configurar_tortugas()
-        self.puntaje_jugador1 = 0
-        self.puntaje_jugador2 = 0
+    @property # Define la propiedad mazo_1
+    def mazo_1(self): # Define el getter de la propiedad mazo_1
+        return self._mazo_1 # Devuelve el valor de la propiedad mazo_1
 
-    def configurar_tortugas(self):
-        # Configuración de la tortuga del jugador 1
-        self.jugador1_turtle.speed(0)
-        self.jugador1_turtle.hideturtle()
-        self.jugador1_turtle.penup()
-        self.jugador1_turtle.goto(-300, -100)
-        self.jugador1_turtle.color("blue")
+    @mazo_1.setter # Define el setter de la propiedad mazo_1
+    def mazo_1(self, valor): # Define el método para establecer el valor de la propiedad mazo_1
+        self._mazo_1 = valor # Establece el valor de la propiedad mazo_1
 
-        # Configuración de la tortuga del jugador 2
-        self.jugador2_turtle.speed(0)
-        self.jugador2_turtle.hideturtle()
-        self.jugador2_turtle.penup()
-        self.jugador2_turtle.goto(300, -100)
-        self.jugador2_turtle.color("red")
+    @property # Define la propiedad mazo_2
+    def mazo_2(self): # Define el getter de la propiedad mazo_2
+        return self._mazo_2 # Devuelve el valor de la propiedad mazo_2
 
-        # Configuración de la tortuga de la mesa
-        self.mesa_turtle.speed(0)
-        self.mesa_turtle.hideturtle()
-        self.mesa_turtle.penup()
-        self.mesa_turtle.goto(0, 100)  # Ajusta la posición vertical
-        self.mesa_turtle.color("black")
+    @mazo_2.setter # Define el setter de la propiedad mazo_2
+    def mazo_2(self, valor): # Define el método para establecer el valor de la propiedad mazo_2
+        self._mazo_2 = valor # Establece el valor de la propiedad mazo_2
 
-        # Configuración de las tortugas para mostrar las cartas
-        self.carta1_turtle.speed(0)
-        self.carta1_turtle.hideturtle()
-        self.carta1_turtle.penup()
-        self.carta1_turtle.goto(-150, 0)  # Posición para la carta del jugador 1
+    @property # Define la propiedad empate
+    def empate(self): # Define el getter de la propiedad empate
+        return self._empate # Devuelve el valor de la propiedad empate
 
-        self.carta2_turtle.speed(0)
-        self.carta2_turtle.hideturtle()
-        self.carta2_turtle.penup()
-        self.carta2_turtle.goto(150, 0)  # Posición para la carta del jugador 2
+    @empate.setter # Define el setter de la propiedad empate
+    def empate(self, valor): # Define el método para establecer el valor de la propiedad empate
+        self._empate = valor # Establece el valor de la propiedad empate
 
-        # Configuración de la tortuga para mostrar el marcador
-        self.marcador_turtle.speed(0)
-        self.marcador_turtle.hideturtle()
-        self.marcador_turtle.penup()
-        self.marcador_turtle.goto(0, -200)
-        self.marcador_turtle.color("black")
+    @property # Define la propiedad ganador
+    def ganador(self): # Define el getter de la propiedad ganador
+        return self._ganador # Devuelve el valor de la propiedad ganador
 
-    def armar_mazo_inicial(self):
+    def _setup_turtle(self): # Define el método para inicializar la interfaz turtle
+        self.screen = turtle.Screen() # Inicializa la pantalla
+        self.screen.setup(width=800, height=600) # Establece el tamaño de la pantalla
+        self.screen.title("Juego de Guerra") # Establece el título de la pantalla
+        self.screen.bgcolor("white") # Establece el color de fondo de la pantalla
+        self.screen.tracer(5)  # Velocidad muy lenta # Ajusta la velocidad de la animación
+
+        # Configurar tortugas para visualización
+        self.t_jugador1 = turtle.Turtle() # Inicializa la tortuga del jugador 1
+        self.t_jugador2 = turtle.Turtle() # Inicializa la tortuga del jugador 2
+        self.t_mesa = turtle.Turtle() # Inicializa la tortuga de la mesa
+        self.t_info = turtle.Turtle()  # Nueva tortuga para información # Inicializa la tortuga de información
+
+        self._configurar_tortugas() # Configura las tortugas
+
+    def _configurar_tortugas(self): # Define el método para configurar las tortugas
+        for t in [self.t_jugador1, self.t_jugador2, self.t_mesa, self.t_info]: # Itera sobre las tortugas
+            t.hideturtle() # Oculta la tortuga
+            t.penup() # Levanta el lápiz
+            t.speed(0) # Establece la velocidad de la tortuga a la máxima
+
+        self.t_jugador1.goto(-300, 0) # Establece la posición de la tortuga del jugador 1
+        self.t_jugador2.goto(300, 0) # Establece la posición de la tortuga del jugador 2
+        self.t_mesa.goto(0, 200) # Establece la posición de la tortuga de la mesa
+        self.t_info.goto(0, -200)  # Posición para la información # Establece la posición de la tortuga de información
+
+    def armar_mazo_inicial(self): # Define el método para armar el mazo inicial
         """representa el mazo inicial, este mazo se crea al inicio
         de cada partida mediante combinación de los números y palos
         de la baraja para formar cartas
-        """
-        cartas = [Carta(valor, palo) for valor in JuegoGuerra.valores
-                  for palo in JuegoGuerra.palos]
+        """ # Documentación del método
+        random.seed(self._seed) # Establece la semilla aleatoria
+        cartas = [Carta(valor, palo) for valor in JuegoGuerra.valores # Crea una lista de cartas
+                  for palo in JuegoGuerra.palos] # Itera sobre los valores y palos
 
-        random.shuffle(cartas)
+        #cartas_shuffled = random.sample(cartas, len(cartas))
+        random.shuffle(cartas) # Mezcla las cartas
+        cartas_shuffled = cartas # Asigna las cartas mezcladas a una variable
 
-        for carta in cartas:
-            self._mazo_inicial.poner_carta_arriba(carta)
+        for carta in cartas_shuffled: # Itera sobre las cartas mezcladas
+            self._mazo_inicial.poner_carta_arriba(carta) # Añade la carta al mazo inicial
 
-        return self._mazo_inicial
+        return self._mazo_inicial # Devuelve el mazo inicial
 
-    def repartir_cartas(self):
-        """reparte el mazo inicial entre los dos jugadores"""
-        while len(self._mazo_inicial):
-            carta_1 = self._mazo_inicial.sacar_carta_arriba()
-            self.mazo_1.poner_carta_arriba(carta_1)
-            carta_2 = self._mazo_inicial.sacar_carta_arriba()
-            self.mazo_2.poner_carta_arriba(carta_2)
+    def repartir_cartas(self): # Define el método para repartir las cartas
+        """reparte el mazo inicial entre los dos jugadores""" # Documentación del método
+        while len(self._mazo_inicial): # Mientras haya cartas en el mazo inicial
+            carta_1 = self._mazo_inicial.sacar_carta_arriba() # Saca una carta del mazo inicial
+            self.mazo_1.poner_carta_arriba(carta_1) # Añade la carta al mazo del jugador 1
+            carta_2 = self._mazo_inicial.sacar_carta_arriba() # Saca una carta del mazo inicial
+            self.mazo_2.poner_carta_arriba(carta_2) # Añade la carta al mazo del jugador 2
 
-        return self.mazo_1, self.mazo_2
+        return self.mazo_1, self.mazo_2 # Devuelve los mazos de los jugadores
 
-    def iniciar_juego(self, ver_partida=True):
-        self.puntaje_jugador1 = 0
-        self.puntaje_jugador2 = 0
-        self.actualizar_marcador()
+    def iniciar_juego(self, ver_partida=True): # Define el método para iniciar el juego
+        self.jugador1_ganadas = 0 # Reinicia el contador de victorias del jugador 1
+        self.jugador2_ganadas = 0 # Reinicia el contador de victorias del jugador 2
+        self.armar_mazo_inicial() # Arma el mazo inicial
+        self.repartir_cartas() # Reparte las cartas
+        self._cartas_en_la_mesa = [] # Reinicia la lista de cartas en la mesa
+        self._turno = 0 # Reinicia el contador de turnos
 
-        while self.puntaje_jugador1 < 2 and self.puntaje_jugador2 < 2:
-            ganador_partida = self.jugar_partida()
-            if ganador_partida == 'jugador 1':
-                self.puntaje_jugador1 += 1
-            elif ganador_partida == 'jugador 2':
-                self.puntaje_jugador2 += 1
-            self.actualizar_marcador()
-            time.sleep(1)  # Pausa entre partidas
+        while self.jugador1_ganadas < JuegoGuerra.VICTORIA and self.jugador2_ganadas < JuegoGuerra.VICTORIA: # Mientras ningún jugador haya alcanzado el número de victorias necesarias para ganar
+            self._turno += 1 # Incrementa el número de turno
+            try: # Intenta
+                if self._guerra: # Comprueba si hay guerra
+                    for _ in range(3): # Itera 3 veces
+                        self._cartas_en_la_mesa.append(self.mazo_1.sacar_carta_arriba()) # Añade una carta del mazo del jugador 1 a la mesa
+                        self._cartas_en_la_mesa.append(self.mazo_2.sacar_carta_arriba()) # Añade una carta del mazo del jugador 2 a la mesa
+                        time.sleep(0.5) # Pausa adicional en guerra # Añade una pausa
 
-        if self.puntaje_jugador1 > self.puntaje_jugador2:
-            ganador_final = 'jugador 1'
-        else:
-            ganador_final = 'jugador 2'
+                carta1 = self.mazo_1.sacar_carta_arriba(mostrar=True) # Saca una carta del mazo del jugador 1
+                carta2 = self.mazo_2.sacar_carta_arriba(mostrar=True) # Saca una carta del mazo del jugador 2
+                self._cartas_en_la_mesa.extend([carta1, carta2]) # Añade las cartas a la mesa
 
-        self.mostrar_ganador_final(ganador_final)
+            except DequeEmptyError: # Si ocurre una excepción DequeEmptyError
+                if len(self.mazo_1): # Comprueba si el jugador 1 tiene cartas
+                    self._ganador = 'jugador 1' # El jugador 1 es el ganador
+                else: # Si el jugador 1 no tiene cartas
+                    self._ganador = 'jugador 2' # El jugador 2 es el ganador
+                self._guerra = False # No hay guerra
+                break # Sale del bucle
 
-    def jugar_partida(self):
-        self._mazo_inicial = Mazo()
-        self.mazo_1 = Mazo()
-        self.mazo_2 = Mazo()
-        self._guerra = False
-        self._ganador = ''
-        self.empate = False
-        self._turno = 0
-        self._cartas_en_la_mesa = []
+            else: # Si no ocurre ninguna excepción
+                self._actualizar_display(carta1, carta2) # Actualiza la interfaz
+                time.sleep(1.5)  # Pausa antes de comparar cartas # Añade una pausa
 
-        self.armar_mazo_inicial()
-        self.repartir_cartas()
+                if  carta1 > carta2: # Comprueba si la carta del jugador 1 es mayor que la del jugador 2
+                    self._transferir_cartas(self.mazo_1) # Transfiere las cartas al jugador 1
+                    self._guerra = False # No hay guerra
+                    self.jugador1_ganadas += 1 # Incrementa el número de victorias del jugador 1
+                elif  carta2 > carta1: # Comprueba si la carta del jugador 2 es mayor que la del jugador 1
+                    self._transferir_cartas(self.mazo_2) # Transfiere las cartas al jugador 2
+                    self._guerra = False # No hay guerra
+                    self.jugador2_ganadas += 1 # Incrementa el número de victorias del jugador 2
+                else: # Si las cartas son iguales
+                    self._guerra = True # Hay guerra
+                    self._mostrar_guerra() # Muestra el mensaje de guerra
 
-        self.dibujar_mazos_iniciales()
-        start_time = time.time()
+            time.sleep(1) # Pausa después de cada turno # Añade una pausa
 
-        while len(self.mazo_1) and len(self.mazo_2) and (time.time() - start_time) < self.MAX_TIME_PER_GAME:
-            try:
-                # Sacar cartas para el turno actual
-                carta_jugador1 = self.mazo_1.sacar_carta_arriba(mostrar=True)
-                carta_jugador2 = self.mazo_2.sacar_carta_arriba(mostrar=True)
-                self._cartas_en_la_mesa.append(carta_jugador1)
-                self._cartas_en_la_mesa.append(carta_jugador2)
-                self.dibujar_cartas_en_mesa(carta_jugador1, carta_jugador2)
-                self.actualizar_pantalla()
-                time.sleep(JuegoGuerra.DELAY)
+        self._mostrar_resultado_final() # Muestra el resultado final
+        turtle.done() # Finaliza la ejecución de turtle
 
-            except IndexError:
-                if len(self.mazo_1):
-                    self._ganador = 'jugador 1'
-                else:
-                    self._ganador = 'jugador 2'
-                self._guerra = False
-                break
-            else:
-                # Determinar el ganador del turno
-                if carta_jugador1 > carta_jugador2:
-                    ganador = 1
-                elif carta_jugador2 > carta_jugador1:
-                    ganador = 2
-                else:
-                    ganador = 0  # Guerra
+    def _actualizar_display(self, carta1, carta2): # Define el método para actualizar la interfaz
+        self.t_jugador1.clear() # Limpia la tortuga del jugador 1
+        self.t_jugador2.clear() # Limpia la tortuga del jugador 2
+        self.t_mesa.clear() # Limpia la tortuga de la mesa
+        self.t_info.clear() # Limpia la tortuga de información
 
-                # Resolver el turno o la guerra
-                if ganador == 1:
-                    self.resolver_turno(1)
-                elif ganador == 2:
-                    self.resolver_turno(2)
-                else:
-                    self._guerra = True
-                    self.mostrar_guerra()
-                    self.actualizar_pantalla()
-                    time.sleep(JuegoGuerra.DELAY)
+        # Mostrar cartas en la mesa
+        self.t_mesa.goto(-100, 100) # Establece la posición de la tortuga de la mesa
+        self.t_mesa.write(str(carta1), align="center", font=("Arial", 24, "bold")) # Escribe la carta del jugador 1
+        self.t_mesa.goto(100, 100) # Establece la posición de la tortuga de la mesa
+        self.t_mesa.write(str(carta2), align="center", font=("Arial", 24, "bold")) # Escribe la carta del jugador 2
 
-                self._turno += 1
-                self.actualizar_mazos()
-                self.actualizar_pantalla()
-                time.sleep(JuegoGuerra.DELAY)
+        # Mostrar conteo de cartas y nombre del jugador
+        self.t_jugador1.goto(-300, 0) # Establece la posición de la tortuga del jugador 1
+        self.t_jugador1.write(f"Jugador 1\nCartas: {len(self.mazo_1)}\nGanadas: {self.jugador1_ganadas}", # Escribe la información del jugador 1
+                            align="center", font=("Arial", 16, "normal")) # Establece la alineación y la fuente
+        self.t_jugador2.goto(300, 0) # Establece la posición de la tortuga del jugador 2
+        self.t_jugador2.write(f"Jugador 2\nCartas: {len(self.mazo_2)}\nGanadas: {self.jugador2_ganadas}", # Escribe la información del jugador 2
+                            align="center", font=("Arial", 16, "normal")) # Establece la alineación y la fuente
 
-        # Si se agota el tiempo, determinar el ganador por la cantidad de cartas restantes
-        if not self._ganador:
-            if len(self.mazo_1) > len(self.mazo_2):
-                self._ganador = 'jugador 1'
-            elif len(self.mazo_2) > len(self.mazo_1):
-                self._ganador = 'jugador 2'
-            else:
-                self._ganador = random.choice(['jugador 1', 'jugador 2'])  # Si hay empate, elige un ganador al azar
+        # Mostrar el turno actual
+        self.t_info.goto(0, -200) # Establece la posición de la tortuga de información
+        self.t_info.write(f"Turno: {self._turno}", # Escribe el número de turno
+                            align="center", font=("Arial", 16, "normal")) # Establece la alineación y la fuente
+        self.screen.update() # Actualiza la pantalla
 
-        self.mostrar_ganador_partida(self._ganador)
-        return self._ganador
+    def _mostrar_guerra(self): # Define el método para mostrar el mensaje de guerra
+        self.t_mesa.clear() # Limpia la tortuga de la mesa
+        self.t_mesa.write("¡GUERRA!", align="center", font=("Arial", 32, "bold")) # Escribe el mensaje de guerra
+        self.screen.update() # Actualiza la pantalla
+        time.sleep(0.5) # Añade una pausa
 
-    def dibujar_mazos_iniciales(self):
-        # Dibuja representaciones simples de los mazos iniciales
-        self.jugador1_turtle.clear()
-        self.jugador2_turtle.clear()
-        self.jugador1_turtle.write(f"Mazo Jugador 1: {len(self.mazo_1)} cartas", align="center", font=("Arial", 12, "normal"))
-        self.jugador2_turtle.write(f"Mazo Jugador 2: {len(self.mazo_2)} cartas", align="center", font=("Arial", 12, "normal"))
-        self.actualizar_pantalla()
+    def _transferir_cartas(self, ganador): # Define el método para transferir las cartas al ganador
+        for carta in self._cartas_en_la_mesa: # Itera sobre las cartas en la mesa
+            ganador.poner_carta_abajo(carta) # Añade la carta al mazo del ganador
+        self._cartas_en_la_mesa = [] # Reinicia la lista de cartas en la mesa
+        self._guerra = False # No hay guerra
 
-    def dibujar_cartas_en_mesa(self, carta_jugador1, carta_jugador2):
-        # Limpia el área de las cartas y dibuja las cartas
-        self.carta1_turtle.clear()
-        self.carta2_turtle.clear()
+    def _mostrar_resultado_final(self): # Define el método para mostrar el resultado final
+        self.t_mesa.clear() # Limpia la tortuga de la mesa
+        ganador = "" # Inicializar con un valor por defecto
+        if self.jugador1_ganadas >= JuegoGuerra.VICTORIA: # Comprueba si el jugador 1 ha ganado
+            ganador = "Jugador 1" # El jugador 1 es el ganador
+        elif self.jugador2_ganadas >= JuegoGuerra.VICTORIA: # Comprueba si el jugador 2 ha ganado
+            ganador = "Jugador 2" # El jugador 2 es el ganador
+        
+        resultado_text = ( # Define el texto del resultado
+            f"¡{ganador} gana!\n" # Añade el nombre del ganador
+            f"Jugador 1 Ganadas: {self.jugador1_ganadas}\n" # Añade el número de victorias del jugador 1
+            f"Jugador 2 Ganadas: {self.jugador2_ganadas}\n" # Añade el número de victorias del jugador 2
+            f"Turnos Jugados: {self._turno}" # Añade el número de turnos jugados
+        )
 
-        # Dibuja las cartas reveladas
-        self.carta1_turtle.write(str(carta_jugador1), align="center", font=("Arial", 16, "normal"))
-        self.carta2_turtle.write(str(carta_jugador2), align="center", font=("Arial", 16, "normal"))
+        self.t_mesa.write(resultado_text, align="center", font=("Arial", 20, "bold")) # Escribe el texto del resultado
+        self.screen.update() # Actualiza la pantalla
+        time.sleep(5) # Añade una pausa
 
-        self.actualizar_pantalla()
 
-    def resolver_turno(self, ganador):
-        # Distribuye las cartas al ganador
-        if ganador == 1:
-            for carta in self._cartas_en_la_mesa:
-                self.mazo_1.poner_carta_abajo(carta)
-        else:
-            for carta in self._cartas_en_la_mesa:
-                self.mazo_2.poner_carta_abajo(carta)
-        self._cartas_en_la_mesa = []
-        self._guerra = False
-
-    def actualizar_mazos(self):
-        # Actualiza el texto de los mazos
-        self.jugador1_turtle.clear()
-        self.jugador2_turtle.clear()
-        self.jugador1_turtle.write(f"Mazo Jugador 1: {len(self.mazo_1)} cartas", align="center", font=("Arial", 12, "normal"))
-        self.jugador2_turtle.write(f"Mazo Jugador 2: {len(self.mazo_2)} cartas", align="center", font=("Arial", 12, "normal"))
-        self.carta1_turtle.clear()
-        self.carta2_turtle.clear()
-        self.mesa_turtle.clear()
-
-    def mostrar_ganador_partida(self, ganador):
-        self.mesa_turtle.clear()
-        self.mesa_turtle.write(f"¡{ganador} gana esta partida!", align="center", font=("Arial", 20, "bold"))
-        self.actualizar_pantalla()
-
-    def mostrar_ganador_final(self, ganador):
-        self.mesa_turtle.clear()
-        self.mesa_turtle.write(f"¡{ganador} es el ganador final!", align="center", font=("Arial", 24, "bold"))
-        self.actualizar_pantalla()
-        time.sleep(3)
-
-    def mostrar_guerra(self):
-        self.mesa_turtle.clear()
-        self.mesa_turtle.write("¡Guerra!", align="center", font=("Arial", 20, "bold"))
-        self.actualizar_pantalla()
-
-    def actualizar_marcador(self):
-        self.marcador_turtle.clear()
-        self.marcador_turtle.write(f"Marcador: Jugador 1 = {self.puntaje_jugador1}, Jugador 2 = {self.puntaje_jugador2}",
-                                  align="center", font=("Arial", 16, "normal"))
-        self.actualizar_pantalla()
-
-    def actualizar_pantalla(self):
-        screen.update()
-
-if __name__ == "__main__":
-    juego = JuegoGuerra()  # No es necesario pasar la semilla, se genera automáticamente
-    juego.iniciar_juego()
-    turtle.done()  # Esto mantiene la ventana abierta hasta que se cierre manualmente
+if __name__ == "__main__": # Si el script se ejecuta directamente
+    random_seed = random.randint(0, 1000) # Genera una semilla aleatoria
+    juego = JuegoGuerra(random_seed) # Crea un objeto JuegoGuerra
+    juego.iniciar_juego() # Inicia el juego
