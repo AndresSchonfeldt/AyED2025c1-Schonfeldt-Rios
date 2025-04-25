@@ -27,6 +27,8 @@ El código sigue un enfoque orientado a objetos con 3 clases principales:
 2.Mazo: (Funcionalidades: poner_carta_arriba/abajo(): Gestiona cartas / sacar_carta_arriba(): Extrae y muestra cartas / Manejo de errores con DequeEmptyError)
 3.JuegoGuerra (clase principal): (Componentes:Métodos de inicialización:_setup_turtle():/ Configuración gráfica armar_mazo_inicial(): Crea y baraja 52 cartas repartir_cartas(): Divide el mazo en 2), (Lógica del juego: iniciar_juego(): Bucle principal del juego/ _actualizar_display(): Muestra cartas en pantalla/ _mostrar_guerra(): Visualiza conflictos por empate /_transferir_cartas(): Mueve cartas al ganador),  (Visualización: Graficas independientes para jugadores, mesa e información / Animaciones con tracer() y pausas con time.sleep())
 
+(1 y 2 se encuentran en modules mientras que 3 se encuentra en app, libreria utilizada para la grafica: "Turtle")
+
 Las gráficas de los resultados están disponible en la carpeta [data](./data) del proyecto.
 
 El informe completo está disponible en la carpeta [docs](./docs) del proyecto.
