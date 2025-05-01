@@ -8,7 +8,7 @@ class Nodo:
         self.siguiente = None
         self.anterior = None
 
-class ListaDoblementeEnlazada:
+class ListaDobleEnlazada:
     def __init__(self):
         self.primero = None
         self.ultimo = None
@@ -123,7 +123,7 @@ def extraer(self, posicion):
     return valor
 
 def copia(self):
-    copia = ListaDoblementeEnlazada()
+    copia = ListaDobleEnlazada()
     actual = self.primero
     while actual:
         copia.insertar(actual.valor) #Agrega al final
