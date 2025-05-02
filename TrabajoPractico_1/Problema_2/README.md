@@ -1,4 +1,4 @@
-# 🐍Nombre del proyecto (darle un nombre significativo) 
+# 🗒️Creacion lista doblemente enlazada
 
 Breve descripción del proyecto:
 Este código consiste en la implementacion de la estructura de Lista doblemente enlazada. 
