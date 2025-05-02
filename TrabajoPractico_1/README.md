@@ -8,4 +8,4 @@ Este trabajo práctico consta de los siguientes 3 proyectos:
 
 `El siguiente PDF mostramos conclusiones y soluciones (Con gráficas y analisis)`
 
-https://drive.google.com/drive/u/0/mobile/my-drive?hl=es
+https://drive.google.com/file/d/1ez1HruBQPn0FRys5bXiyAMh_MHhiHp-1/view?usp=drivesdk
