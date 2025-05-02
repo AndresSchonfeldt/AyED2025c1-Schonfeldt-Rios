@@ -1,4 +1,4 @@
-# 🗒️Creacion lista doblemente enlazada
+# 🗒️Creacion lista doblemente enlazada.
 
 Breve descripción del proyecto:
 Este código consiste en la implementacion de la estructura de Lista doblemente enlazada. 
