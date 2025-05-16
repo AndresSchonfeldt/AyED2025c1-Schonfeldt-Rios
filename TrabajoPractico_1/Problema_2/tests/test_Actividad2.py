@@ -10,7 +10,7 @@ import unittest
 import random
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from modules.Actividad2 import ListaDobleEnlazada
+from Problema_2.modules.Lista_doble_enlazada import ListaDobleEnlazada
 
 
 class Nodo:

@@ -1,6 +1,6 @@
 import timeit
 import turtle
-from modules.Actividad2 import ListaDobleEnlazada
+from modules.Lista_doble_enlazada import ListaDobleEnlazada
 
 # Tamaños de lista a evaluar
 N_values = [100, 500, 1000, 5000, 10000]

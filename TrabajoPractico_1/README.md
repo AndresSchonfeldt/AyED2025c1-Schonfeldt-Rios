@@ -6,6 +6,4 @@ Este trabajo práctico consta de los siguientes 3 proyectos:
   - `🗒️Creacion lista doblemente enlazada`
   - `🎮 Juego de Guerra`
 
-`El siguiente PDF mostramos conclusiones y soluciones (Con gráficas y analisis)`
-
-https://drive.google.com/file/d/1ez1HruBQPn0FRys5bXiyAMh_MHhiHp-1/view
+`El PDF mostramos conclusiones/informes y soluciones (Con gráficas y analisis)`
