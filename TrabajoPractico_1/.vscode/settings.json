@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./Problema_1/modules"
+    ]
+}
