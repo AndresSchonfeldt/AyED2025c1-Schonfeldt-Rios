@@ -1,58 +1,39 @@
-#  🎮 Juego de Guerra
-
-Breve descripción del proyecto:
-Este es un script que simula el clásico juego de cartas "Guerra" entre dos jugadores, implementando una interfaz gráfica interactiva con la librería turtle de Python. Permite:
-✅ Visualizar en tiempo real las cartas jugadas, los mazos y las victorias acumuladas.
-✅ Simular dinámicas de guerra (empates) con pausas estratégicas para mejorar la legibilidad.
-✅ Rastrear métricas clave: turnos jugados, cartas restantes y ganancias por jugador.
-✅ Reproducir partidas mediante semillas aleatorias para garantizar consistencia en pruebas.
-
-Características destacadas:
-
-Lógica de comparación de cartas basada en valores numéricos (incluye figuras como J, Q, K, A).
-
-Sistema de puntuación hasta 10 victorias para determinar el ganador final.
-
-Animaciones simplificadas con velocidad ajustable para una experiencia de usuario adaptable.
-
-Manejo de errores para casos como mazos vacíos durante guerras.
+#  Palomas Mensajeras - Optimización de Comunicación entre Aldeas 🐦
 ---
-## 🏗Arquitectura General
-
-Organización del código:
-
-El código sigue un enfoque orientado a objetos con 3 clases principales:
-
-1.Carta:(Propiedades: valor, palo, visible), (Métodos clave: _valor_numerico(): Convierte J/Q/K/A a valores 11-14 / __gt__(): Compara cartas por su valor numérico / __str__(): Representación visual (-X si está oculta, ej: "A♠"))
-2.Mazo: (Funcionalidades: poner_carta_arriba/abajo(): Gestiona cartas / sacar_carta_arriba(): Extrae y muestra cartas / Manejo de errores con DequeEmptyError)
-3.JuegoGuerra (clase principal): (Componentes:Métodos de inicialización:_setup_turtle():/ Configuración gráfica armar_mazo_inicial(): Crea y baraja 52 cartas repartir_cartas(): Divide el mazo en 2), (Lógica del juego: iniciar_juego(): Bucle principal del juego/ _actualizar_display(): Muestra cartas en pantalla/ _mostrar_guerra(): Visualiza conflictos por empate /_transferir_cartas(): Mueve cartas al ganador),  (Visualización: Graficas independientes para jugadores, mesa e información / Animaciones con tracer() y pausas con time.sleep())
-
-(1 y 2 se encuentran en modules mientras que 3 se encuentra en app, libreria utilizada para la grafica: "Turtle")
-
-Las gráficas de los resultados están disponible en la carpeta [data](./data) del proyecto.
-
-El informe completo está disponible en la carpeta [docs](./docs) del proyecto.
-
+📄 Breve descripción del proyecto
+Este proyecto resuelve la propagación eficiente de mensajes entre aldeas utilizando un árbol de expansión mínima (MST) con el algoritmo de Prim. Se implementa en Python con módulos estructurados para la gestión de datos, procesamiento del grafo y visualización interactiva.
 ---
-## 📑Dependencias
+# ✨ Características destacadas
+Implementación del algoritmo de Prim para encontrar el camino óptimo de transmisión.
 
-1. **Python 3.x**
-2. **matplotlib** (`pip install matplotlib`)
-3. listar dependencias principales
-4. Dependencias listadas en requierements.txt
+Modularidad con archivos independientes (aldeas_data.py, graph.py y palomas_mensajeras_app.py).
 
+Visualización interactiva con Turtle, asegurando claridad en los nombres de aldeas y rutas.
+
+Resultados óptimos en la transmisión del mensaje con mínima distancia recorrida.
+---
+# 🏗 Arquitectura General
+El código se divide en:
+
+aldeas_data.py → Contiene la información de aldeas y conexiones.
+
+graph.py → Implementa la estructura del grafo y el algoritmo de Prim.
+
+palomas_mensajeras_app.py → Ejecuta el análisis y genera la visualización con Turtle.
+
+Visualización: Se utiliza Turtle para representar gráficamente la red de comunicación, asegurando que las líneas no interfieran con el texto.
+
+📄 Informe completo con gráficas y conclusiones en el PDF adjunto.
+---
+## 📑 Dependencias
+Para ejecutar el proyecto, asegúrate de tener Python instalado, ya que Turtle es una biblioteca estándar incluida en Python. No es necesario instalarla por separado.
 ---
 ## 🚀Cómo Ejecutar el Proyecto
 1. **Clonar o descargar** el repositorio.
 
 2. **Crear y activar** un entorno virtual.
 
-3. **Instalar las dependencias**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-   El archivo `requirements.txt` se encuentran en la carpeta [deps](./deps) del proyecto.
-
+3. **Ver resultados en la terminal y la representación gráfica en la ventana de Turtle.**
 ---
 ## 🙎‍♀️🙎‍♂️Autores
 

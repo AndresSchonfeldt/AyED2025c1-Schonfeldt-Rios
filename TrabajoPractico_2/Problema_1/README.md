@@ -1,36 +1,41 @@
-# 🐍Comparación Visual de Algoritmos de Ordenamiento en Python
+# Sala de Emergencias - Simulación de Triaje🚑
 
 Breve descripción del proyecto:
-Este es un script en Python que compara el rendimiento de distintos algoritmos de ordenamiento: Bubble Sort, Quick Sort, Radix Sort y la función built-in sorted. Genera listas de números aleatorios de diferentes tamaños, mide el tiempo que tarda cada algoritmo en ordenar dichas listas, y finalmente visualiza los resultados en un gráfico interactivo usando la librería Turtle. El proyecto permite analizar visualmente la eficiencia relativa de cada algoritmo según el tamaño de la lista, facilitando la comprensión de sus diferencias de rendimiento.
+Este proyecto es una simulación simple de un sistema de triaje en una sala de emergencias, donde los pacientes son atendidos según su nivel de riesgo. La implementación garantiza que los casos más críticos tengan prioridad en la atención médica.
 
 ---
 ## 🏗Arquitectura General
 
-Este programa en Python compara el rendimiento de cuatro algoritmos de ordenamiento (Bubble Sort, Quick Sort, Radix Sort y la función nativa sorted() de Python) mediante listas aleatorias de números de 5 dígitos. El código genera listas con tamaños entre 100 y 1000 elementos (en incrementos de 100), mide los tiempos de ejecución de cada algoritmo usando time.time() y visualiza los resultados con matplotlib.pyplot. Los algoritmos incluyen: Bubble Sort (O(n²) por sus bucles anidados), Quick Sort (O(n log n) promedio con pivote central) y Radix Sort (O(n × k) mediante counting_sort para dígitos individuales). La función generate_random_list crea las listas aleatorias, mientras measure_time calcula los tiempos sin alterar los datos originales. Tras ejecutar las pruebas, el script configura un gráfico de líneas con título, ejes etiquetados, leyenda y cuadrícula, mostrando cómo sorted() (basado en Timsort) supera en velocidad a los demás, seguido de Radix Sort para datos de dígitos fijos, mientras Bubble Sort evidencia su ineficiencia con crecimiento cuadrático. El gráfico final, generado con plt.plot() y plt.show(), confirma visualmente la escalabilidad óptima de los algoritmos modernos frente a métodos clásicos.
+La organización del código se basa en una estructura modular:
 
-Las gráficas de los resultados están disponible en la carpeta [data](./data) del proyecto.
+-paciente.py: Define los pacientes con su nivel de riesgo y datos de ingreso.
 
-El informe completo está disponible en la carpeta [docs](./docs) del proyecto.
+-cola_prioridad.py: Implementa la cola de prioridad mediante un heap.
+
+-main.py: Ejecuta la simulación, gestionando el ingreso y atención de pacientes.
+
+El proyecto se centra en la gestión de la información y en la correcta estructuración de la lógica de triaje, dejando la representación visual como parte del PDF del informe, que contiene gráficos generados con herramientas de visualización apropiadas.
 
 ---
 ## 📑Dependencias
+Este proyecto usa las siguientes bibliotecas:
 
-1. **Python 3.x**
-2. **matplotlib** (`pip install matplotlib`)
-3. listar dependencias principales
-4. Dependencias listadas en requierements.txt
+-heapq: Para la gestión eficiente de la cola de prioridad.
+
+-random: Para la asignación aleatoria de riesgo a los pacientes.
+
+-datetime: Para registrar tiempos de ingreso y atención.
 
 ---
 ## 🚀Cómo Ejecutar el Proyecto
-1. **Clonar o descargar** el repositorio.
+1. Clonar o descargar el repositorio.
 
-2. **Crear y activar** un entorno virtual.
+2. Asegurarse de tener Python 3.x instalado.
 
-3. **Instalar las dependencias**:
+3. Ejecutar el archivo main.py:
    ```bash
-   pip install -r requirements.txt
+   python main.py
    ```
-   El archivo `requirements.txt` se encuentran en la carpeta [deps](./deps) del proyecto.
 
 ---
 ## 🙎‍♀️🙎‍♂️Autores
