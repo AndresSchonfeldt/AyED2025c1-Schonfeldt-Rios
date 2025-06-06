@@ -1,4 +1,4 @@
-from TrabajoPractico_2.Problema_2.modules.ArbolAVL import Temperaturas_DB
+from modules.ArbolAVL import Temperaturas_DB
 
 
 if __name__ == "__main__":
