@@ -1,19 +1,17 @@
-import heapq
+from modules.monticulo import MonticuloBinario
 
-class ColaPrioridad:
+class ColaDePrioridad:
     def __init__(self):
-        self._heap = []
+        self._monticulo = MonticuloBinario()
 
-    def agregar(self, elemento):
-        heapq.heappush(self._heap, elemento)
+    def agregar(self, paciente):
+        self._monticulo.insertar(paciente)
 
     def atender(self):
-        if self._heap:
-            return heapq.heappop(self._heap)
-        return None
+        return self._monticulo.extraer()
 
     def __len__(self):
-        return len(self._heap)
+        return len(self._monticulo)
 
     def mostrar_pacientes(self):
-        return sorted(self._heap)  # Muestra en orden de prioridad
+        return self._monticulo.mostrar()

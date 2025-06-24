@@ -1,4 +1,4 @@
-import heapq
+from modules.binary_heap import BinaryHeap
 
 class Graph:
     def __init__(self):
@@ -16,24 +16,24 @@ class Graph:
         return sorted(self.adj_list.keys())
 
     def find_min_spanning_tree(self, start):
-        """Algoritmo de Prim para encontrar el árbol de expansión mínima."""
+        """Algoritmo de Prim con montículo binario personalizado."""
         mst = {}
         visited = set()
-        min_heap = [(0, start, None)]
+        heap = BinaryHeap()
+        heap.push((0, start, None))
         total_distance = 0
 
-        while min_heap:
-            weight, current, parent = heapq.heappop(min_heap)
+        while not heap.is_empty():
+            weight, current, parent = heap.pop()
             if current in visited:
                 continue
-            
             visited.add(current)
             total_distance += weight
             if parent:
                 mst[current] = parent
-            
+
             for neighbor, edge_weight in self.adj_list.get(current, []):
                 if neighbor not in visited:
-                    heapq.heappush(min_heap, (edge_weight, neighbor, current))
+                    heap.push((edge_weight, neighbor, current))
 
         return mst, total_distance

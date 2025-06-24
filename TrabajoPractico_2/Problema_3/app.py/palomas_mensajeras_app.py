@@ -13,9 +13,8 @@ def plot_graph_turtle(mst, aldeas):
     drawer.speed(0)
     drawer.penup()
 
-    # Asignar posiciones a todas las aldeas
     aldeas_pos = {}
-    offset_x, offset_y = -300, 250  
+    offset_x, offset_y = -300, 250
 
     for i, aldea in enumerate(aldeas):
         aldeas_pos[aldea] = (offset_x + (i % 5) * 150, offset_y - (i // 5) * 50)
@@ -23,31 +22,27 @@ def plot_graph_turtle(mst, aldeas):
     drawer.pencolor("gray")
     drawer.pensize(2)
 
-    # Dibujar conexiones entre aldeas con ajuste para evitar que pasen sobre el texto
     for aldea, origen in mst.items():
         if aldea in aldeas_pos and origen in aldeas_pos:
             start_x, start_y = aldeas_pos[aldea]
             end_x, end_y = aldeas_pos[origen]
-
-            # Ajustar posición de las líneas para evitar que pasen sobre el texto
             mid_x = (start_x + end_x) / 2
-            mid_y = (start_y + end_y) / 2 - 10  # Desplazamos ligeramente hacia abajo
+            mid_y = (start_y + end_y) / 2 - 10
 
             drawer.goto(start_x, start_y)
             drawer.pendown()
-            drawer.goto(mid_x, mid_y)  # Punto medio para evitar nombres
+            drawer.goto(mid_x, mid_y)
             drawer.goto(end_x, end_y)
             drawer.penup()
         else:
             print(f"Advertencia: '{aldea}' o '{origen}' no tienen una posición asignada.")
 
-    # Dibujar nombres de aldeas y mejorar el contraste visual
     drawer.pencolor("black")
     drawer.hideturtle()
 
     for aldea, pos in aldeas_pos.items():
         drawer.goto(pos)
-        drawer.dot(10, "blue")  
+        drawer.dot(10, "blue")
         drawer.goto(pos[0] + 10, pos[1] - 5)
         drawer.write(aldea, font=("Arial", 10, "bold"), align="left")
 
@@ -57,17 +52,14 @@ def main():
     """Ejecuta el análisis del problema y la visualización con Turtle."""
     graph = Graph()
 
-    # Cargar datos desde el módulo aldeas_data
     for start, end, weight in aldeas_rutas:
         graph.add_edge(start, end, weight)
 
-    # Obtener lista de aldeas ordenadas alfabéticamente
     aldeas = graph.get_nodes()
     print("Lista de aldeas en orden alfabético:")
     for aldea in aldeas:
         print(aldea)
 
-    # Encontrar el árbol de expansión mínima desde Peligros
     mst, total_distance = graph.find_min_spanning_tree("Peligros")
 
     print("\nCamino óptimo para la transmisión de la noticia:")
@@ -76,7 +68,6 @@ def main():
 
     print("\nDistancia total recorrida por las palomas:", total_distance, "leguas")
 
-    # Llamar a la visualización en Turtle con ajustes gráficos
     plot_graph_turtle(mst, aldeas)
 
 if __name__ == "__main__":

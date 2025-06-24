@@ -1,5 +1,3 @@
-# aldeas_data.py
-
 aldeas_rutas = [
     ("Lomaseca", "Pepino", 3),
     ("Lomaseca", "Los Infiernos", 2),
